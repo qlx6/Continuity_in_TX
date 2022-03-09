@@ -22,7 +22,7 @@ source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts
 ## ==================== MAIN ====================
 
 #setwd("C:/r_archive/r_projects/Waterfall_Dataset_Generation/data_waterfall/data") # Folder 
-work_dir <- "C:/Users/qlx6/Downloads/MSD"
+work_dir <- "C:/Users/qlx6/Downloads/MSD/a"
 setwd(work_dir)
 # setwd(choose.dir())
 
@@ -196,9 +196,11 @@ for (ou in ou_list) {
                   `TX_ML_Refused Stopped Treatment_Now_R` = `TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R`,
                   `TX_ML_Transferred Out_Now_R` = `TX_ML_No Contact Outcome - Transferred Out_Now_R`,
                   TX_RTT_Now_R = TX_RTT_NA_Now_R,
+                  # Commented RTT disaggs for Namibia because they are not in the Other Disaggregates column
                   `TX_RTT_ <3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
                   `TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
-                  `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
+                  `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`
+                  ) #%>% 
     #mutate(TX_ML_Now_R = sum(TX_ML_Died_Now_R, 
                              #`TX_ML_Interruption <3 Months Treatment_Now_R`,
                              #`TX_ML_Interruption 3-5 Months Treatment_R`,
@@ -292,7 +294,9 @@ for (ou in ou_list) {
   #df8a <- bind_rows(df3a, df4a, df5a, df6a, df7a) # Used for troubleshooting
   #write.csv(df8a, file = "C:/Users/qlx6/OneDrive - CDC/general dynamics - icpi/raw24.csv") # Used for troubleshooting
  
-  openxlsx::write.xlsx(ou_ou2, file=paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/COT", ou_name, period, date,"_0950AM.xlsx", sep = "_"), 
+  openxlsx::write.xlsx(ou_ou2, 
+                       file=paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/global_WF", 
+                                  ou_name, period, date,"_0930hrs.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
     
 }

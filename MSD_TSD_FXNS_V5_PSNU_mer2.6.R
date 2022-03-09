@@ -3,8 +3,8 @@
 ## AUTHOR: Randy Yee (pcx5@cdc.gov)
 ## DESCRIPTION: 
 ##      TSD Refactor from Imran Mujawar (CDC)'s original script
-## CREATION DATE: 4/30/2021
 ##      TX_ML & RTT disaggregation inclusion for MER 2.6 by Femi Akinmade (CDC)
+## CREATION DATE: 4/30/2021
 ## UPDATE: 02/23/2022
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -111,13 +111,12 @@ redo_indicator_name <- function(reformatted_age_sex){
 txs_clean <- function(redone_indicator_name){
   df <- redone_indicator_name %>%
     filter(standardizeddisaggregate %in% c("Age/Sex/HIVStatus",
-                                           "Age/Sex/ARTNoContactReason/HIVStatus",
-                                           "ARTNoContactReasonIIT/HIVStatus")
-                                        #c("Age Aggregated/Sex/HIVStatus",
-                                        #   "Age/Sex/HIVStatus",
-                                        #   "Age/Sex/ARTNoContactReason/HIVStatus",
-                                        #   "Age/Sex/ARTCauseofDeath",
-                                        #   "Age/Sex/ARTNoContactReason")
+                                           "Age Aggregated/Sex/HIVStatus", 
+                                           #"ARTNoContactReasonIIT/HIVStatus",
+                                           "Age/Sex/ARTNoContactReason/HIVStatus"
+                                           
+                                           )
+
     ) %>%
     select(operatingunit,
            countryname,
@@ -130,6 +129,7 @@ txs_clean <- function(redone_indicator_name){
            mech_name,
            mech_code,
            indicatortype,
+           #standardizeddisaggregate, # added
            age_type,
            age,
            sex,

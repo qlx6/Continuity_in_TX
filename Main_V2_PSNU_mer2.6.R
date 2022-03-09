@@ -3,8 +3,8 @@
 ## AUTHOR: Randy Yee (pcx5@cdc.gov)
 ## DESCRIPTION: 
 ##      TSD Refactor from Imran Mujawar (CDC)'s original script
-## CREATION DATE: 4/30/2021
 ##      TX_ML & RTT disaggregation inclusion for MER 2.6 by Femi Akinmade (CDC)
+## CREATION DATE: 4/30/2021
 ## UPDATE: 02/23/2022
 ## UPDATE: For Global - all OU PSNUxIM
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,10 +109,10 @@ for (ou in ou_list) {
       `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption In Treatment 6+ Months Treatment_Now_R`,
       `TX_ML_Refused Stopped Treatment_Now_R` = `TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R`,
       `TX_ML_Transferred Out_Now_R` = `TX_ML_No Contact Outcome - Transferred Out_Now_R`,
-      TX_RTT_Now_R = TX_RTT_NA_Now_R,
-      `TX_RTT_ <3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
-      `TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
-      `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
+      TX_RTT_Now_R = TX_RTT_NA_Now_R)#,
+      #`TX_RTT_ <3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
+      #`TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
+      #`TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
   
   shell_df1 <- c("operatingunit",                                                         
                  "countryname",                                                           
@@ -129,7 +129,8 @@ for (ou in ou_list) {
                  "mech_code",
                  "facility",
                  "facilityprioritization",                                                
-                 "age_type",                                                                   
+                 "age_type", 
+                 #"standardizeddisaggregate", # added
                  "age",                                                                   
                  "sex", 
                  "indicatortype",
@@ -151,7 +152,8 @@ for (ou in ou_list) {
                  "TX_RTT_Now_R",
                  "TX_RTT_ <3 Months Interruption",
                  "TX_RTT_3-5 Months Interruption",
-                 "TX_RTT_6+ Months Interruption")
+                 "TX_RTT_6+ Months Interruption"
+                 )
 
   
   missing1 <- setdiff(shell_df1, names(ou_ou2))
@@ -168,7 +170,9 @@ for (ou in ou_list) {
   #openxlsx::write.xlsx(ou_ou2, file=paste("C:/Users/qlx6/OneDrive - CDC/TSD - Yee, Randy (CDC_DDPHSIS_CGH_DGHT)'s files/Waterfall", ou_name, period,"_V1.xlsx", sep = ""), 
   #                     keepNA = FALSE, asTable = TRUE)
 
-  openxlsx::write.xlsx(ou_ou2, file=paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/Global_COT", ou_name, period, date,"_0520AM.xlsx", sep = "_"), 
+  openxlsx::write.xlsx(ou_ou2, 
+                       file = paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/WF_Global", 
+                                    ou_name, period, date,"_0530PM.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
   
 }

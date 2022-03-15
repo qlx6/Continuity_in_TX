@@ -18,7 +18,7 @@ period <- "2022Q1"
 date <- Sys.Date()
 
 # ------- Read-in PSNUxIM MSD ------- #
-psnuXim <- read_tsv(file.choose(), 
+msd <- read_tsv(file.choose(), 
                trim_ws = TRUE,
                col_types = cols(.default = col_character(), 
                                 targets = col_double(),
@@ -28,41 +28,71 @@ psnuXim <- read_tsv(file.choose(),
                                 qtr4 = col_double(),
                                 cumulative = col_double()))
 
-TX_CURR_psnuXim <- psnuXim %>% 
+TX_CURR_msd <- msd %>% 
   filter(indicator %in% c("TX_CURR"))
 
-TX_NEW_psnuXim <- psnuXim %>% 
+TX_NEW_msd <- msd %>% 
   filter(indicator %in% c("TX_NEW"))
 
-TX_ML_psnuXim <- psnuXim %>% 
+TX_NET_NEW_msd <- msd %>% 
+  filter(indicator %in% c("TX_NET_NEW"))
+
+TX_ML_msd <- msd %>% 
   filter(indicator %in% c("TX_ML"))
 
-TX_RTT_psnuXim <- psnuXim %>% 
+TX_RTT_msd <- msd %>% 
   filter(indicator %in% c("TX_RTT"))
+
+TX_RTT_msd <- msd %>% 
+  filter(indicator %in% c("TX_RTT"))
+
+HTS_INDEX_msd <- msd %>% 
+  filter(indicator %in% c("HTS_INDEX"))
+
+
+
+
+
+
+indicators <- unique(msd$indicator)
+for (i in 1:length(msd)){ 
+  temp <- msd[msd$indicator==indicator[i],]
+  #more things to do with temp
+}
+=
+
+
+inds <- as.character(unique(msd$indicator))
+
+    for (i in 1:length(inds)) {
+    assign(inds[i], inds[[i]])
+    }
+
 
 
 
 setwd("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/QC")
-write.csv(TX_CURR_psnuXim, file = "TX_CURR_psnuXim_test.csv")
-write_csv(TX_NEW_psnuXim, file = "TX_NEW_psnuXim_test.csv")
-write_csv(TX_RTT_psnuXim, file = "TX_RTT_psnuXim_test.csv")
-write_csv(TX_ML_psnuXim, file = "TX_ML_psnuXim_test.csv") 
+write.csv(TX_CURR_msd, file = "TX_CURR_msd_test.csv")
+write_csv(TX_NEW_msd, file = "TX_NEW_msd_test.csv")
+write_csv(TX_RTT_msd, file = "TX_RTT_msd_test.csv")
+write_csv(TX_ML_msd, file = "TX_ML_msd_test.csv") 
+
+write_csv(ind, file = "indicators.csv") 
 
 
 
 
 
-
-asia_ml <- psnuXim %>% 
+asia_ml <- msd %>% 
   filter(operatingunit %in% c("Asia Region") & indicator %in% c("TX_ML"))
 
 
-# - Extract Indonesia & Mozambique from PSNUxIM MSD ------- #
+# - Extract Indonesia & Mozambique from msd MSD ------- #
 # - Both do not require the Age Aggregate standardized disag
 # - for TX_CURR & TX_NEW
 
 # - OU Subsets - #
-ind <- psnuXim %>% 
+ind <- msd %>% 
   filter(countryname %in% c("Indonesia"))
 
 ind_curr_new <- ind %>% 
@@ -75,7 +105,7 @@ ind_less_tx <- ind %>%
 
 
 
-moz <- psnuXim %>% 
+moz <- msd %>% 
   filter(countryname %in% c("Mozambique"))
 
 moz_curr_new <- ind %>% 
@@ -87,7 +117,7 @@ ind_less_tx <- ind %>%
 
 
 
-less_ind_moz_psnuXim <- psnuXim %>% 
+less_ind_moz_msd <- msd %>% 
   filter(countryname %in% c("Angola",
                             "Botswana",
                             "Burundi",
@@ -144,17 +174,17 @@ less_ind_moz_psnuXim <- psnuXim %>%
 # - Write out PSNU ~ Indonesia & Mozambique subset -------- #
 # --------------------------------------------------------- #
 write.table(ind, 
-            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/ind_PSNUxIM.txt", 
+            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/ind_msd.txt", 
             sep = "\t",
             row.names = TRUE, col.names = NA)
 
 write.table(moz, 
-            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/ind_PSNUxIM.txt", 
+            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/ind_msd.txt", 
             sep = "\t",
             row.names = TRUE, col.names = NA)
 
-write.table(less_ind_moz_psnuXim, 
-            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/other_PSNUxIM.txt", 
+write.table(less_ind_moz_msd, 
+            file = "C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1/other_msd.txt", 
             sep = "\t",
             row.names = TRUE, col.names = NA)
 

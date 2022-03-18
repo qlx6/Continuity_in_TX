@@ -126,8 +126,8 @@ txs_clean <- function(redone_indicator_name){
   df <- redone_indicator_name %>%
     filter(standardizeddisaggregate %in% c("Age/Sex/HIVStatus",
                                            "Age/Sex/ARTNoContactReason/HIVStatus",
-                                           "Age Aggregated/Sex/HIVStatus"
-                                           #"ARTNoContactReasonIIT/HIVStatus"
+                                           "Age Aggregated/Sex/HIVStatus",
+                                           "ARTNoContactReasonIIT/HIVStatus"
     )
            
     ) %>%

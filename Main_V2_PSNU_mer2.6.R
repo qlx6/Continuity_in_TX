@@ -14,15 +14,15 @@ library(openxlsx)
 
 rm(list=ls())
 
-#source("https://raw.githubusercontent.com/randyyee/ICPI-Analytics-Data-Management/master/Waterfall/MSD_TSD_FXNS_V5_PSNU.R")
-source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
+source("https://raw.githubusercontent.com/qlx6/Continuity_in_TX/main/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
+#source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
 
 ## ==================== MAIN ====================
 setwd("C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1") # Folder 
 
 
 
-period <- "_FY22Q1"
+period <- "Clean_FY22Q1"
 date <- Sys.Date()
 
 ou_list <- list.files(pattern = ".*.txt")
@@ -109,10 +109,10 @@ for (ou in ou_list) {
       `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption In Treatment 6+ Months Treatment_Now_R`,
       `TX_ML_Refused Stopped Treatment_Now_R` = `TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R`,
       `TX_ML_Transferred Out_Now_R` = `TX_ML_No Contact Outcome - Transferred Out_Now_R`,
-      TX_RTT_Now_R = TX_RTT_NA_Now_R)#,
-      #`TX_RTT_ <3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
-      #`TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
-      #`TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
+      TX_RTT_Now_R = TX_RTT_NA_Now_R,#,
+      `TX_RTT_<3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
+      `TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
+      `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
   
   shell_df1 <- c("operatingunit",                                                         
                  "countryname",                                                           
@@ -150,7 +150,7 @@ for (ou in ou_list) {
                  "TX_ML_Refused Stopped Treatment_Now_R",
                  "TX_ML_Transferred Out_Now_R",
                  "TX_RTT_Now_R",
-                 "TX_RTT_ <3 Months Interruption",
+                 "TX_RTT_<3 Months Interruption",
                  "TX_RTT_3-5 Months Interruption",
                  "TX_RTT_6+ Months Interruption"
                  )
@@ -172,7 +172,7 @@ for (ou in ou_list) {
 
   openxlsx::write.xlsx(ou_ou2, 
                        file = paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/WF_Global", 
-                                    ou_name, period, date,"_0530PM.xlsx", sep = "_"), 
+                                    ou_name, period, date,"_0400PM.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
   
 }

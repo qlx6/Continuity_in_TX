@@ -12,6 +12,7 @@
 
 library(tidyverse)
 library(openxlsx)
+library(readxl)
 
 rm(list=ls())
 
@@ -26,7 +27,7 @@ work_dir <- "C:/Users/qlx6/Downloads/MSD/a"
 setwd(work_dir)
 # setwd(choose.dir())
 
-period <- "_FY22Q1"
+period <- "Clean_FY22Q1"
 date <- Sys.Date()
 
 # Reading in all txt from repository (Ensure one download in repo)
@@ -200,13 +201,7 @@ for (ou in ou_list) {
                   `TX_RTT_ <3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
                   `TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
                   `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`
-                  ) #%>% 
-    #mutate(TX_ML_Now_R = sum(TX_ML_Died_Now_R, 
-                             #`TX_ML_Interruption <3 Months Treatment_Now_R`,
-                             #`TX_ML_Interruption 3-5 Months Treatment_R`,
-                             #`TX_ML_Interruption 6+ Months Treatment_R`,
-                             #`TX_ML_Refused Stopped Treatment_Now_R`,
-                             #`TX_ML_Transferred Out_Now_R`)) # Addition of TX_ML topline
+                  )
   
   shell_df1 <- c("operatingunit",                                                         
                  "countryname",                                                           
@@ -246,17 +241,7 @@ for (ou in ou_list) {
                  "TX_RTT_ <3 Months Interruption",
                  "TX_RTT_3-5 Months Interruption",
                  "TX_RTT_6+ Months Interruption")
-                 #"TX_ML_No Contact Outcome - Interruption in Treatment <3 Months Treatment_Now_R",
-                 #"TX_ML_Interruption 3+ Months Treatment_Now_R",
-                 #"TX_ML_No Contact Outcome - Interruption in Treatment 3-5 Months Treatment_Now_R",
-                 #"TX_ML_No Contact Outcome - Interruption In Treatment 6+ Months Treatment_Now_R",
-                 #"TX_ML_No Contact Outcome - Died_Now_R",
-                 #"TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R",
-                 #"TX_ML_No Contact Outcome - Transferred Out_Now_R",
-                 #"TX_RTT_Now_R",
-                 #"TX_RTT_ <3 Months Interruption",
-                 #"TX_RTT_3-5 Months Interruption",
-                 #"TX_RTT_6+ Months Interruption")
+
   
   
 
@@ -264,39 +249,13 @@ for (ou in ou_list) {
   ou_ou2[missing1] <- NA
   ou_ou2 <- ou_ou2[shell_df1] # Column Order
   
-
-  
   ## Export
   ou_name <- unique(ou_ou$operatingunit)
   
-#  openxlsx::write.xlsx(ou_ou, file=paste("C:/Users/qlx6/OneDrive - CDC/TSD - Yee, Randy (CDC_DDPHSIS_CGH_DGHT)'s files/Waterfall_ADJ", ou_name, period,"_V1.xlsx", sep = ""), 
-#                       keepNA = FALSE, asTable = TRUE)
-# Produce copy in CoT Repo
-#  openxlsx::write.xlsx(ou_ou, file=paste("C:/Users/qlx6/PEPFAR/ICPI - Treatment Continuity Dashboard/Datasets/Waterfall_ADJ", ou_name, period,"_V1.xlsx", sep = ""), 
-#                       keepNA = FALSE, asTable = TRUE)
-  
-  
-  #openxlsx::write.xlsx(ou_ou2, file=paste("C:/Users/qlx6/OneDrive - CDC/TSD - Yee, Randy (CDC_DDPHSIS_CGH_DGHT)'s files/Waterfall", ou_name, period,"_V1.xlsx", sep = ""), 
-#                       keepNA = FALSE, asTable = TRUE)
-# Produce copy in CoT Repo  
-  #openxlsx::write.xlsx(ou_ou, file=paste("C:/Users/qlx6/PEPFAR/ICPI - Treatment Continuity Dashboard/Datasets/Waterfall", ou_name, period,"_V1.xlsx", sep = ""), 
-#                       keepNA = FALSE, asTable = TRUE)
- 
-# Produce copy in CoT Repo  
-  #openxlsx::write.xlsx(ou_ou, file=paste("C:/Users/qlx6/Downloads/lesothoos", ou_name, period,"_V1.xlsx", sep = ""), 
-  #                     keepNA = FALSE, asTable = TRUE) 
-  
-  
-  #openxlsx::write.xlsx(ou_ou2, file=paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/COT", ou_name, period,"_test.xlsx", sep = "_"), 
-  #                     keepNA = FALSE, asTable = TRUE) 
-  
-  
-  #df8a <- bind_rows(df3a, df4a, df5a, df6a, df7a) # Used for troubleshooting
-  #write.csv(df8a, file = "C:/Users/qlx6/OneDrive - CDC/general dynamics - icpi/raw24.csv") # Used for troubleshooting
- 
+
   openxlsx::write.xlsx(ou_ou2, 
-                       file=paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/global_WF", 
-                                  ou_name, period, date,"_0930hrs.xlsx", sep = "_"), 
+                       file=paste("C:/Users/qlx6/Downloads/Clean_2022Q1_dataset/COT_WF", 
+                                  ou_name, period, date,"_1400hrs.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
     
 }
@@ -304,28 +263,3 @@ for (ou in ou_list) {
 proc.time() - ptm
 
 
-## ==================== TESTS ==================== 
-# test <- msd_import(ou_list[3])
-#  
-# test1 <- msd_convert_long(test)
-# 
-# test2 <- recode_period_txdisagg(test1, "2020_qtr2", "2020_qtr3", "2020_targets")
-# 
-# test3 <- recode_prioritizations(test2)
-# 
-# test4 <- collapse_age(test3)
-# 
-# test5 <- redo_indicator_name(test4)
-# 
-# test6 <- txs_clean(test5)
-# 
-# test7 <- txs_convert_wide(test6)
-# 
-# test8 <- tx_net_new_adj(test1)
-# 
-# test9 <- txs_w_netnewadj(test7, test8)
-# 
-# compose_test <- txs_generate(ou_list[3], "2020_qtr2", "2020_qtr3", "2020_targets")
-# 
-# compose_test2 <- txs_adj_generate(ou_list[3], "2020_qtr2", "2020_qtr3", "2020_targets")
-# Experiment_2 worked best for the waterfall MER 2.6 changes

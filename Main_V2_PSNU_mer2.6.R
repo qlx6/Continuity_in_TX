@@ -18,11 +18,11 @@ source("https://raw.githubusercontent.com/qlx6/Continuity_in_TX/main/MSD_TSD_FXN
 #source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
 
 ## ==================== MAIN ====================
-setwd("C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220211_v1_1") # Folder 
+setwd("C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220318_v2_1") # Folder 
 
 
 
-period <- "Clean_FY22Q1"
+period <- "PostClean_FY22Q1"
 date <- Sys.Date()
 
 ou_list <- list.files(pattern = ".*.txt")
@@ -171,8 +171,8 @@ for (ou in ou_list) {
   #                     keepNA = FALSE, asTable = TRUE)
 
   openxlsx::write.xlsx(ou_ou2, 
-                       file = paste("C:/Users/qlx6/Downloads/PreClean_2022_Q1_V1_Datasets/WF_Global", 
-                                    ou_name, period, date,"_0400PM.xlsx", sep = "_"), 
+                       file = paste("C:/Users/qlx6/Downloads/PostClean_2022_Q1_V1_Datasets/WF_Global", 
+                                    ou_name, period, date,"_1900hr.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
   
 }

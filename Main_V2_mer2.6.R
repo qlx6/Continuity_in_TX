@@ -23,11 +23,11 @@ source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts
 ## ==================== MAIN ====================
 
 #setwd("C:/r_archive/r_projects/Waterfall_Dataset_Generation/data_waterfall/data") # Folder 
-work_dir <- "C:/Users/qlx6/Downloads/MSD/a"
+work_dir <- "C:/Users/qlx6/Downloads/MSD"
 setwd(work_dir)
 # setwd(choose.dir())
 
-period <- "Clean_FY22Q1"
+period <- "PostClean_FY22Q1"
 date <- Sys.Date()
 
 # Reading in all txt from repository (Ensure one download in repo)
@@ -254,8 +254,8 @@ for (ou in ou_list) {
   
 
   openxlsx::write.xlsx(ou_ou2, 
-                       file=paste("C:/Users/qlx6/Downloads/Clean_2022Q1_dataset/COT_WF", 
-                                  ou_name, period, date,"_1400hrs.xlsx", sep = "_"), 
+                       file=paste("C:/Users/qlx6/Downloads/PostClean_2022_Q1_V1_Datasets/COT_WF", 
+                                  ou_name, period, date,"_1900hrs.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
     
 }

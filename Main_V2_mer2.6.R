@@ -16,8 +16,8 @@ library(readxl)
 
 rm(list=ls())
 
-#source("https://raw.githubusercontent.com/randyyee/ICPI-Analytics-Data-Management/master/Waterfall/MSD_TSD_FXNS_V5.R")
-source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_mer2.6.R")
+source("https://raw.githubusercontent.com/qlx6/Continuity_in_TX/main/MSD_TSD_FXNS_V5_mer2.6.R.R")
+#source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_mer2.6.R")
 
 #options("install.lock"=FALSE)
 ## ==================== MAIN ====================

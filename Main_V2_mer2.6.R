@@ -13,21 +13,22 @@
 library(tidyverse)
 library(openxlsx)
 library(readxl)
+library(dplyr)
 
 rm(list=ls())
 
-source("https://raw.githubusercontent.com/qlx6/Continuity_in_TX/main/MSD_TSD_FXNS_V5_mer2.6.R.R")
-#source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_mer2.6.R")
+#source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_mer2.6_copy.R")
+source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_mer2.6_copy.R")
 
 #options("install.lock"=FALSE)
 ## ==================== MAIN ====================
 
-#setwd("C:/r_archive/r_projects/Waterfall_Dataset_Generation/data_waterfall/data") # Folder 
-work_dir <- "C:/Users/qlx6/Downloads/MSD"
+#setwd("C:/Users/spv8/Desktop/CoT R Script/OUxIM MSDs") # Folder 
+work_dir <- "C:/Users/qlx6/Downloads/MSD/siteXim"
 setwd(work_dir)
 # setwd(choose.dir())
 
-period <- "PostClean_FY22Q1"
+period <- "PostClean_FY22Q2"
 date <- Sys.Date()
 
 # Reading in all txt from repository (Ensure one download in repo)
@@ -137,6 +138,10 @@ for (ou in ou_list) {
                        "2021_qtr4",
                        "2022_qtr1",
                        "2022_targets")
+  df8a <- txs_generate(ou_df,
+                       "2022_qtr1",
+                       "2022_qtr2",
+                       "2022_targets")
   
   ## Adjusted TX Column Order
   ou_ou <- bind_rows(list(df3, df4, df5, df6, df7)) %>% 
@@ -144,7 +149,7 @@ for (ou in ou_list) {
   
   
   shell_df <- c("operatingunit",
-                "countryname",
+                "country",
                 "snu1",
                 "snuprioritization",
                 "psnu",
@@ -152,12 +157,12 @@ for (ou in ou_list) {
                 "sitetype",
                 "sitename",
                 "orgunituid",
-                "fundingagency",
-                "primepartner",
+                "funding_agency",
+                "prime_partner_",
                 "mech_name",
                 "mech_code",
                 "facility",
-                "facilityprioritization",
+                #"facilityprioritization",
                 "period",
                 "TX_CURR_Now_R",
                 "tx_curr",
@@ -186,14 +191,14 @@ for (ou in ou_list) {
   ## Waterfall Column Order
 
   
-  ou_ou2 <- bind_rows(list(df3a, df4a, df5a, df6a, df7a)) %>% 
+  ou_ou2 <- bind_rows(list(df3a, df4a, df5a, df6a, df7a, df8a)) %>% 
     mutate(period = paste0("FY",substr(period,3,4),"Q",substr(period,9,9))) %>% 
     dplyr::rename(#TX_ML_Now_R = TX_ML_Now_R,
                   TX_ML_Died_Now_R = `TX_ML_No Contact Outcome - Died_Now_R`,
                   `TX_ML_Interruption <3 Months Treatment_Now_R` = `TX_ML_No Contact Outcome - Interruption in Treatment <3 Months Treatment_Now_R`,
                   `TX_ML_Interruption 3+ Months Treatment_Now_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 3+ Months Treatment_Now_R`,
                   `TX_ML_Interruption 3-5 Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 3-5 Months Treatment_Now_R`,
-                  `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption In Treatment 6+ Months Treatment_Now_R`,
+                  `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 6+ Months Treatment_Now_R`,
                   `TX_ML_Refused Stopped Treatment_Now_R` = `TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R`,
                   `TX_ML_Transferred Out_Now_R` = `TX_ML_No Contact Outcome - Transferred Out_Now_R`,
                   TX_RTT_Now_R = TX_RTT_NA_Now_R,
@@ -204,7 +209,7 @@ for (ou in ou_list) {
                   )
   
   shell_df1 <- c("operatingunit",                                                         
-                 "countryname",                                                           
+                 "country",                                                           
                  "snu1",                                                                  
                  "snuprioritization",                                                     
                  "psnu",                                                                  
@@ -212,12 +217,12 @@ for (ou in ou_list) {
                  "sitetype",                                                              
                  "sitename",                                                              
                  "orgunituid",                                                            
-                 "fundingagency",                                                         
-                 "primepartner",                                                          
+                 "funding_agency",                                                         
+                 "prime_partner_name",                                                          
                  "mech_name",                                                             
                  "mech_code",
                  "facility",
-                 "facilityprioritization",                                                
+                 #"facilityprioritization",                                                
                  "age_type",                                                                   
                  "age",                                                                   
                  "sex", 
@@ -254,8 +259,8 @@ for (ou in ou_list) {
   
 
   openxlsx::write.xlsx(ou_ou2, 
-                       file=paste("C:/Users/qlx6/Downloads/PostClean_2022_Q1_V1_Datasets/COT_WF", 
-                                  ou_name, period, date,"_1900hrs.xlsx", sep = "_"), 
+                       file=paste("C:/Users/qlx6/Downloads/COT_Transformed_PostClean_2022_Q2", 
+                                  ou_name, period, date,"_1200hrs.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
     
 }

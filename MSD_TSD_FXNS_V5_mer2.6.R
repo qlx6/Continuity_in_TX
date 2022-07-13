@@ -17,16 +17,57 @@ msd_import <- function(msd_txt){
   
   df <- read_delim(msd_txt, 
                    "\t", 
-                   escape_double = FALSE,
                    trim_ws = TRUE,
-                   col_types = cols(.default = col_character(), 
-                                    targets = col_double(),
-                                    qtr1 = col_double(),
-                                    qtr2 = col_double(),
-                                    qtr3 = col_double(),
-                                    qtr4 = col_double(),
-                                    cumulative = col_double()
-                   ) 
+                   col_types = cols(orgunituid = "c",
+                                    sitename = "c",
+                                    operatingunit = "c",
+                                    operatingunituid = "c",
+                                    country = "c",
+                                    snu1 = "c",
+                                    snu1uid = "c",
+                                    psnu = "c",
+                                    psnuuid = "c",
+                                    snuprioritization = "c",
+                                    typemilitary = "c",
+                                    dreams = "c",
+                                    prime_partner_name = "c",
+                                    funding_agency = "c",
+                                    mech_code = "c",
+                                    mech_name = "c",
+                                    prime_partner_duns = "c",
+                                    prime_partner_uei = "c",
+                                    award_number = "c",
+                                    communityuid = "c",
+                                    community = "c",
+                                    facilityuid = "c",
+                                    facility = "c",
+                                    sitetype = "c",
+                                    indicator = "c",
+                                    numeratordenom = "c",
+                                    indicatortype = "c",
+                                    disaggregate = "c",
+                                    standardizeddisaggregate = "c",
+                                    categoryoptioncomboname = "c",
+                                    ageasentered = "c",
+                                    age_2018 = "c",
+                                    age_2019 = "c",
+                                    trendscoarse = "c",
+                                    sex = "c",
+                                    statushiv = "c",
+                                    statustb = "c",
+                                    statuscx = "c",
+                                    hiv_treatment_status = "c",
+                                    otherdisaggregate = "c",
+                                    otherdisaggregate_sub = "c",
+                                    modality = "c",
+                                    fiscal_year = "c",
+                                    targets = "d",
+                                    qtr1 = "d",
+                                    qtr2 = "d",
+                                    qtr3 = "d",
+                                    qtr4 = "d",
+                                    cumulative = "d",
+                                    source_name = "c")
   ) %>%
     
     filter(indicator %in% c(#"HTS_TST_POS", #a1
@@ -80,10 +121,10 @@ recode_period_txdisagg <- function(msd_converted_long, prev_r, curr_r, curr_t){
 recode_prioritizations <- function(recoded_period_txdisagg){
   df <- recoded_period_txdisagg %>% 
     filter(period == "curr_result") %>%
-    select(c(orgunituid, snuprioritization, facilityprioritization)) %>%
+    select(c(orgunituid, snuprioritization)) %>%
     distinct()
   
-  df2 <- select(recoded_period_txdisagg, -c(snuprioritization, facilityprioritization))
+  df2 <- select(recoded_period_txdisagg, -c(snuprioritization))
   
   df3 <- left_join(df2, df)
 }
@@ -93,8 +134,9 @@ recode_prioritizations <- function(recoded_period_txdisagg){
 collapse_age <- function(recoded_prioritizations){
   
   df <- recoded_prioritizations %>%
-    select(-c(ageasentered, trendssemifine)) %>%
-    pivot_longer(cols=c("trendsfine", "trendscoarse"), 
+    select(-c(ageasentered, age_2019)) %>%
+    rename("trendsfine"="age_2018") %>%
+    pivot_longer(cols=c("age_2018", "trendscoarse"), 
                  names_to = "age_type", 
                  values_to = "age") %>%
     filter(!is.na(value))
@@ -132,7 +174,7 @@ txs_clean <- function(redone_indicator_name){
            
     ) %>%
     select(operatingunit,
-           countryname,
+           country,
            snu1,
            snuprioritization,
            psnu,
@@ -140,12 +182,12 @@ txs_clean <- function(redone_indicator_name){
            sitetype,
            sitename,
            orgunituid,
-           fundingagency,
-           primepartner,
+           funding_agency,
+           prime_partner_name,
            mech_name,
            mech_code,
            facility,
-           facilityprioritization,
+           #facilityprioritization,
            indicatortype,
            age_type,
            age,
@@ -216,8 +258,8 @@ tx_net_new_adj <- function(msd_converted_long){
   # 2) Limit df for analysis  --------------------------------------------------------------
   df <- msd_converted_long %>% 
     arrange(operatingunit, orgunituid, period) %>% 
-    select(operatingunit, orgunituid, period, mech_code, fundingagency, value) %>%
-    group_by(operatingunit, orgunituid, period, mech_code, fundingagency) %>%
+    select(operatingunit, orgunituid, period, mech_code, funding_agency, value) %>%
+    group_by(operatingunit, orgunituid, period, mech_code, funding_agency) %>%
     summarise(value=sum(value, na.rm = TRUE)) %>%
     ungroup() %>%
     mutate(value = na_if(value, 0))
@@ -226,15 +268,15 @@ tx_net_new_adj <- function(msd_converted_long){
   df_mechnames <- msd_converted_long %>%
     distinct(mech_code, 
              mech_name, 
-             primepartner, 
+             prime_partner_name, 
              period) 
   
   df_org <- msd_converted_long %>% 
-    distinct(operatingunit, countryname, snu1, psnu, facility, orgunituid)
+    distinct(operatingunit, country, snu1, psnu, facility, orgunituid)
   
   # 4) Flag for lone obs  --------------------------------------------------------------
   df <- df %>% 
-    complete(period, nesting(operatingunit, orgunituid, mech_code, fundingagency)) %>% 
+    complete(period, nesting(operatingunit, orgunituid, mech_code, funding_agency)) %>% 
     arrange(orgunituid, mech_code, period) %>% 
     group_by(orgunituid, mech_code) %>% 
     mutate(flag_loneobs = !is.na(value) & is.na(lead(value, order_by = period)) & is.na(lag(value, order_by = period))) %>% 
@@ -266,15 +308,15 @@ tx_net_new_adj <- function(msd_converted_long){
     group_by(orgunituid) %>% 
     mutate(end_type = case_when(flag_end_sitexmech == TRUE & last_obs_sitexmech == last_obs_site ~ "Transition out of PEPFAR",
                                 flag_end_sitexmech == TRUE & flag_multimech_site == TRUE ~ "Consolidate mutli-mechanism site",
-                                flag_end_sitexmech == TRUE & fundingagency != lead(fundingagency, order_by = period) ~ "Transition to other agency",
+                                flag_end_sitexmech == TRUE & funding_agency != lead(funding_agency, order_by = period) ~ "Transition to other agency",
                                 flag_end_sitexmech == TRUE & mech_code != lead(mech_code, order_by = period) ~ "Transition to other mechanism")) %>% 
     ungroup()
   
   # 9) Identify agency transitions  --------------------------------------------------------------
   df <- df %>% 
     group_by(orgunituid) %>%
-    mutate(agency_exiting = case_when(end_type == "Transition to other agency" ~ fundingagency),
-           agency_inheriting = case_when(end_type == "Transition to other agency" ~ lead(fundingagency, order_by = period))) %>% 
+    mutate(agency_exiting = case_when(end_type == "Transition to other agency" ~ funding_agency),
+           agency_inheriting = case_when(end_type == "Transition to other agency" ~ lead(funding_agency, order_by = period))) %>% 
     ungroup()
   
   # 10) Method (adjusted NN or traditional for multi-mech sites)  --------------------------------------------------------------
@@ -290,8 +332,8 @@ tx_net_new_adj <- function(msd_converted_long){
   
   # 12) Reorder  --------------------------------------------------------------
   df <- df %>% 
-    select(operatingunit, orgunituid, fundingagency, 
-           mech_code, mech_name, primepartner, everything())
+    select(operatingunit, orgunituid, funding_agency, 
+           mech_code, mech_name, prime_partner_name, everything())
   
   # 13) Bring org hierarchy data in  --------------------------------------------------------------
   df <- df %>% 
@@ -313,8 +355,8 @@ tx_net_new_adj <- function(msd_converted_long){
     select(-flag_multimech_site) %>% 
     complete(period, nesting(orgunituid, mech_code), fill = list(tx_curr = 0)) %>% 
     group_by(mech_code, orgunituid) %>% 
-    fill(operatingunit, countryname, snu1, psnu, facility, 
-         fundingagency, mech_name, primepartner,
+    fill(operatingunit, country, snu1, psnu, facility, 
+         funding_agency, mech_name, prime_partner_name,
          .direction = "downup") %>% 
     ungroup() %>% 
     arrange(operatingunit, orgunituid, mech_code, period)
@@ -331,15 +373,15 @@ tx_net_new_adj <- function(msd_converted_long){
     select(-flag_multimech_site) %>% 
     complete(period, nesting(orgunituid), fill = list(tx_curr = 0)) %>% 
     group_by(orgunituid) %>% 
-    fill(operatingunit, countryname, snu1, psnu, facility, 
-         fundingagency, mech_code, mech_name, primepartner,
+    fill(operatingunit, country, snu1, psnu, facility, 
+         funding_agency, mech_code, mech_name, prime_partner_name,
          .direction = "downup") %>% 
     ungroup() %>% 
     arrange(operatingunit, orgunituid, mech_code, period)
   
   # 20) Calculate adjusted NET_NEW  --------------------------------------------------------------
   df_complete_nn_adj <- df_complete_site %>% 
-    select(-c(operatingunit:primepartner, -mech_code)) %>% 
+    select(-c(operatingunit:prime_partner_name, -mech_code)) %>% 
     arrange(orgunituid, period) %>% 
     group_by(orgunituid) %>%
     mutate(tx_curr_lag_site = lag(tx_curr, order_by = period),
@@ -417,12 +459,12 @@ txs_w_netnewadj <- function(txs_df, netnew_df){
                   , 
                   netnew_df, 
                   by = c("operatingunit", 
-                         "countryname", 
+                         "country", 
                          "snu1", 
                          "psnu", 
                          "orgunituid", 
-                         "fundingagency", 
-                         "primepartner", 
+                         "funding_agency", 
+                         "prime_partner_name", 
                          "mech_name", 
                          "mech_code",
                          "facility",

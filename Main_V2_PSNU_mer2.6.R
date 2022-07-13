@@ -14,15 +14,15 @@ library(openxlsx)
 
 rm(list=ls())
 
-source("https://raw.githubusercontent.com/qlx6/Continuity_in_TX/main/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
+source("C:/Users/qlx6/OneDrive - CDC/general dynamics - icpi/GitHub/continuity_in_tx/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
 #source("C:/r_archive/r_projects/Waterfall_Dataset_Generation/waterfall R scripts_mer2.6/MSD_TSD_FXNS_V5_PSNU_mer2.6.R")
 
 ## ==================== MAIN ====================
-setwd("C:/Users/qlx6/Downloads/MER_Structured_Datasets_PSNU_IM_FY20-22_20220318_v2_1") # Folder 
+setwd("C:/Users/qlx6/Downloads/MSD/global") # Folder 
 
 
 
-period <- "PostClean_FY22Q1"
+period <- "PostClean_FY22Q2"
 date <- Sys.Date()
 
 ou_list <- list.files(pattern = ".*.txt")
@@ -95,27 +95,31 @@ for (ou in ou_list) {
                        "2021_qtr4",
                        "2022_qtr1",
                        "2022_targets")
+  df8a <- txs_generate(ou_df,
+                       "2022_qtr1",
+                       "2022_qtr2",
+                       "2022_targets")
   
 #dfa1, dfa2, dfa3, # removed from the bind below  
   
   ## Waterfall Column Order
-  ou_ou2 <- bind_rows(list(df3a, df4a, df5a, df6a, df7a)) %>% 
+  ou_ou2 <- bind_rows(list(df3a, df4a, df5a, df6a, df7a, df8a)) %>% 
     mutate(period = paste0("FY",substr(period,3,4),"Q",substr(period,9,9))) %>% 
     dplyr::rename(#TX_ML_Now_R = TX_ML_Now_R,
       TX_ML_Died_Now_R = `TX_ML_No Contact Outcome - Died_Now_R`,
       `TX_ML_Interruption <3 Months Treatment_Now_R` = `TX_ML_No Contact Outcome - Interruption in Treatment <3 Months Treatment_Now_R`,
       `TX_ML_Interruption 3+ Months Treatment_Now_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 3+ Months Treatment_Now_R`,
       `TX_ML_Interruption 3-5 Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 3-5 Months Treatment_Now_R`,
-      `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption In Treatment 6+ Months Treatment_Now_R`,
+      `TX_ML_Interruption 6+ Months Treatment_R` = `TX_ML_No Contact Outcome - Interruption in Treatment 6+ Months Treatment_Now_R`,
       `TX_ML_Refused Stopped Treatment_Now_R` = `TX_ML_No Contact Outcome - Refused Stopped Treatment_Now_R`,
       `TX_ML_Transferred Out_Now_R` = `TX_ML_No Contact Outcome - Transferred Out_Now_R`,
-      TX_RTT_Now_R = TX_RTT_NA_Now_R,#,
+      TX_RTT_Now_R = TX_RTT_NA_Now_R,
       `TX_RTT_<3 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment <3 Months Interruption_Now_R`,
       `TX_RTT_3-5 Months Interruption` = `TX_RTT_No Contact Outcome - Interruption in Treatment 3-5 Months Interruption_Now_R`,
       `TX_RTT_6+ Months Interruption` = `TX_RTT_No Contact Outcome - Interruption In Treatment 6+ Months Interruption_Now_R`) #%>% 
   
   shell_df1 <- c("operatingunit",                                                         
-                 "countryname",                                                           
+                 "country",                                                           
                  "snu1",                                                                  
                  "snuprioritization",                                                     
                  "psnu",                                                                  
@@ -123,12 +127,12 @@ for (ou in ou_list) {
                  "sitetype",                                                              
                  "sitename",                                                              
                  "orgunituid",                                                            
-                 "fundingagency",                                                         
-                 "primepartner",                                                          
+                 "funding_agency",                                                         
+                 "prime_partner_name",                                                          
                  "mech_name",                                                             
                  "mech_code",
                  "facility",
-                 "facilityprioritization",                                                
+                 #"facilityprioritization",                                                
                  "age_type", 
                  #"standardizeddisaggregate", # added
                  "age",                                                                   
@@ -171,7 +175,7 @@ for (ou in ou_list) {
   #                     keepNA = FALSE, asTable = TRUE)
 
   openxlsx::write.xlsx(ou_ou2, 
-                       file = paste("C:/Users/qlx6/Downloads/PostClean_2022_Q1_V1_Datasets/WF_Global", 
+                       file = paste("C:/Users/qlx6/Downloads/COT_Transformed_PostClean_2022_Q2", 
                                     ou_name, period, date,"_1900hr.xlsx", sep = "_"), 
                        keepNA = FALSE, asTable = TRUE) 
   

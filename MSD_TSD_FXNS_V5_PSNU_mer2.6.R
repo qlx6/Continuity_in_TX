@@ -79,7 +79,8 @@ recode_period_txdisagg <- function(msd_converted_long, prev_r, curr_r, curr_t){
 collapse_age <- function(recoded_prioritizations){
   
   df <- recoded_prioritizations %>%
-    select(-c(ageasentered, trendssemifine)) %>%
+    select(-c(ageasentered, age_2019)) %>%
+    rename("trendsfine"="age_2018") %>%
     pivot_longer(cols=c("trendsfine", "trendscoarse"), 
                  names_to = "age_type", 
                  values_to = "age") %>%
@@ -119,13 +120,13 @@ txs_clean <- function(redone_indicator_name){
 
     ) %>%
     select(operatingunit,
-           countryname,
+           country,
            snu1,
            snuprioritization,
            psnu,
            psnuuid,
-           fundingagency,
-           primepartner,
+           funding_agency,
+           prime_partner_name,
            mech_name,
            mech_code,
            indicatortype,
